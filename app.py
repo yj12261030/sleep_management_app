@@ -208,7 +208,7 @@ if st.button("진단 결과 보기"):
                 "주말수면시간",
                 "사회적시차",
                 "피로도점수",
-                "학습효율점수",
+                "학습효율방해점수",
             ])
 
         writer.writerow([
@@ -232,7 +232,7 @@ if os.path.exists("sleep_data.csv"):
     st.write("평균 평일 수면시간:", round(data["평일수면시간"].mean(), 2), "시간")
     st.write("평균 사회적 시차:", round(data["사회적시차"].mean(), 2), "시간")
     st.write("평균 피로도:", round(data["피로도점수"].mean(), 2), "점")
-    st.write("평균 학습효율방해점수:", round(data["학습효율점수"].mean(), 2), "점")
+    st.write("평균 학습효율방해점수:", round(data["학습효율방해점수"].mean(), 2), "점")
 
     st.subheader("데이터 다운로드")
 
@@ -252,4 +252,4 @@ if os.path.exists("sleep_data.csv"):
     st.bar_chart(data.groupby("수면코드")["피로도점수"].mean())
 
     st.subheader("수면 코드별 평균 학습효율방해점수")
-    st.bar_chart(data.groupby("수면코드")["학습효율점수"].mean())
+    st.bar_chart(data.groupby("수면코드")["학습효율방해점수"].mean())

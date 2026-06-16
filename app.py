@@ -8,22 +8,16 @@ st.title("수면 코드 진단 및 맞춤형 수면 개선 프로그램")
 def sleep_duration(bed_h, bed_m, wake_h, wake_m):
     bed = bed_h * 60 + bed_m
     wake = wake_h * 60 + wake_m
-
     if wake <= bed:
         wake += 24 * 60
-
     return (wake - bed) / 60
-
 
 def mid_sleep(bed_h, bed_m, wake_h, wake_m):
     bed = bed_h * 60 + bed_m
     wake = wake_h * 60 + wake_m
-
     if wake <= bed:
         wake += 24 * 60
-
     return (bed + wake) / 2
-
 
 st.header("1. 크로노타입")
 
@@ -38,7 +32,6 @@ preferred_bedtime = st.radio(
     [1, 2, 3, 4],
     format_func=lambda x: ["밤 10시 이전", "밤 10시~자정", "자정~새벽 2시", "새벽 2시 이후"][x - 1],
 )
-
 
 st.header("2. 수면 시간")
 
@@ -57,7 +50,6 @@ with col2:
     weekend_bed_m = st.number_input("주말 취침 분", 0, 59, 0)
     weekend_wake_h = st.number_input("주말 기상 시", 0, 23, 9)
     weekend_wake_m = st.number_input("주말 기상 분", 0, 59, 0)
-
 
 st.header("3. 피로도 및 학습 효율성")
 
@@ -85,7 +77,6 @@ negative_academic = st.radio(
     format_func=lambda x: ["매우 그렇다", "대체로 그렇다", "대체로 그렇지 않다", "전혀 그렇지 않다"][x - 1],
 )
 
-
 if st.button("진단 결과 보기"):
     score = focus_time + preferred_bedtime
 
@@ -100,31 +91,17 @@ if st.button("진단 결과 보기"):
         chrono_code = "E"
 
     weekday_sleep = sleep_duration(
-        weekday_bed_h,
-        weekday_bed_m,
-        weekday_wake_h,
-        weekday_wake_m,
+        weekday_bed_h, weekday_bed_m, weekday_wake_h, weekday_wake_m
     )
-
     weekend_sleep = sleep_duration(
-        weekend_bed_h,
-        weekend_bed_m,
-        weekend_wake_h,
-        weekend_wake_m,
+        weekend_bed_h, weekend_bed_m, weekend_wake_h, weekend_wake_m
     )
 
     weekday_mid = mid_sleep(
-        weekday_bed_h,
-        weekday_bed_m,
-        weekday_wake_h,
-        weekday_wake_m,
+        weekday_bed_h, weekday_bed_m, weekday_wake_h, weekday_wake_m
     )
-
     weekend_mid = mid_sleep(
-        weekend_bed_h,
-        weekend_bed_m,
-        weekend_wake_h,
-        weekend_wake_m,
+        weekend_bed_h, weekend_bed_m, weekend_wake_h, weekend_wake_m
     )
 
     social_jetlag = abs(weekend_mid - weekday_mid) / 60
@@ -167,13 +144,13 @@ if st.button("진단 결과 보기"):
         fatigue_level = "낮음"
 
     if learning_score >= 7:
-        learning_level = "매우 낮음"
+        learning_level = "매우 높음"
     elif learning_score >= 5:
-        learning_level = "낮음"
+        learning_level = "높음"
     elif learning_score >= 3:
         learning_level = "보통"
     else:
-        learning_level = "높음"
+        learning_level = "낮음"
 
     st.success(f"최종 수면 코드: {final_code}")
 
@@ -185,8 +162,8 @@ if st.button("진단 결과 보기"):
     st.write("사회적 시차 유형:", jetlag_type)
     st.write("피로도 지수:", fatigue_score, "/ 8점")
     st.write("피로도 수준:", fatigue_level)
-    st.write("학습 효율성 지수:", learning_score, "/ 8점")
-    st.write("학습 효율성 수준:", learning_level)
+    st.write("학습효율방해점수:", learning_score, "/ 8점")
+    st.write("학습효율 방해 수준:", learning_level)
 
     st.subheader("맞춤형 수면 개선 전략")
 
@@ -215,8 +192,8 @@ if st.button("진단 결과 보기"):
     if fatigue_level in ["높음", "매우 높음"]:
         st.write("- 낮 시간 피로도가 높은 편이므로 취침 전 스마트폰 사용과 늦은 취침 습관을 점검해 보세요.")
 
-    if learning_level in ["낮음", "매우 낮음"]:
-        st.write("- 주관적 학습 효율성이 낮게 나타났으므로 집중력이 높은 시간대에 핵심 과목을 배치해 보세요.")
+    if learning_level in ["높음", "매우 높음"]:
+        st.write("- 학습효율 방해 정도가 높은 편이므로 집중력이 높은 시간대에 핵심 과목을 배치해 보세요.")
 
     file_exists = os.path.exists("sleep_data.csv")
 
@@ -233,15 +210,6 @@ if st.button("진단 결과 보기"):
                 "피로도점수",
                 "학습효율점수",
             ])
-            st.subheader("데이터 다운로드")
-
-    with open("sleep_data.csv", "rb") as file:
-        st.download_button(
-            label="CSV 파일 다운로드",
-            data=file,
-            file_name="sleep_data.csv",
-            mime="text/csv"
-        )       
 
         writer.writerow([
             final_code,
@@ -255,7 +223,6 @@ if st.button("진단 결과 보기"):
 
     st.info("데이터가 저장되었습니다.")
 
-
 if os.path.exists("sleep_data.csv"):
     st.header("누적 통계")
 
@@ -265,17 +232,18 @@ if os.path.exists("sleep_data.csv"):
     st.write("평균 평일 수면시간:", round(data["평일수면시간"].mean(), 2), "시간")
     st.write("평균 사회적 시차:", round(data["사회적시차"].mean(), 2), "시간")
     st.write("평균 피로도:", round(data["피로도점수"].mean(), 2), "점")
-    st.write("평균 학습 효율성 저하 지수:", round(data["학습효율점수"].mean(), 2), "점")
+    st.write("평균 학습효율방해점수:", round(data["학습효율점수"].mean(), 2), "점")
 
     st.subheader("데이터 다운로드")
 
-    with open("sleep_data.csv", "rb") as file:
-        st.download_button(
-            label="CSV 파일 다운로드",
-            data=file,
-            file_name="sleep_data.csv",
-            mime="text/csv"
-        )
+    csv_download = data.to_csv(index=False).encode("utf-8-sig")
+
+    st.download_button(
+        label="CSV 파일 다운로드",
+        data=csv_download,
+        file_name="sleep_research_data.csv",
+        mime="text/csv"
+    )
 
     st.subheader("수면 코드 분포")
     st.bar_chart(data["수면코드"].value_counts())
@@ -283,5 +251,5 @@ if os.path.exists("sleep_data.csv"):
     st.subheader("수면 코드별 평균 피로도")
     st.bar_chart(data.groupby("수면코드")["피로도점수"].mean())
 
-    st.subheader("수면 코드별 평균 학습 효율성 저하")
+    st.subheader("수면 코드별 평균 학습효율방해점수")
     st.bar_chart(data.groupby("수면코드")["학습효율점수"].mean())

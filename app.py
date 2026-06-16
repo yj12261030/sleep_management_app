@@ -233,6 +233,15 @@ if st.button("진단 결과 보기"):
                 "피로도점수",
                 "학습효율점수",
             ])
+            st.subheader("데이터 다운로드")
+
+    with open("sleep_data.csv", "rb") as file:
+        st.download_button(
+            label="CSV 파일 다운로드",
+            data=file,
+            file_name="sleep_data.csv",
+            mime="text/csv"
+        )       
 
         writer.writerow([
             final_code,
@@ -257,6 +266,16 @@ if os.path.exists("sleep_data.csv"):
     st.write("평균 사회적 시차:", round(data["사회적시차"].mean(), 2), "시간")
     st.write("평균 피로도:", round(data["피로도점수"].mean(), 2), "점")
     st.write("평균 학습 효율성 저하 지수:", round(data["학습효율점수"].mean(), 2), "점")
+
+    st.subheader("데이터 다운로드")
+
+    with open("sleep_data.csv", "rb") as file:
+        st.download_button(
+            label="CSV 파일 다운로드",
+            data=file,
+            file_name="sleep_data.csv",
+            mime="text/csv"
+        )
 
     st.subheader("수면 코드 분포")
     st.bar_chart(data["수면코드"].value_counts())
